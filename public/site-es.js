@@ -132,7 +132,7 @@ form.addEventListener('submit',async e=>{
   btn.textContent="Abriendo pago seguro…";
   msg.classList.remove('show');
   try{
-    const payload=Object.fromEntries(new FormData(form).entries());
+    const payload=Object.fromEntries(new FormData(form).entries());if(payload.annualPhoneCountryCode&&payload.annualPhone){payload.annualPhone=(payload.annualPhoneCountryCode+' '+payload.annualPhone).trim();}
     const r=await fetch('/api/create-annual-subscription',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
     const d=await r.json();
     if(!r.ok||!d.url)throw new Error(d.error||"No se pudo iniciar el pago.");

@@ -240,6 +240,7 @@ async function createAnnualSubscription(request, env) {
   try { body = await request.json(); } catch { return json({ error: 'Invalid subscription request.' }, 400); }
   const email = clean(body.email, 180).toLowerCase();
   const companyName = clean(body.companyName, 180);
+  const annualPhone = clean(body.annualPhone, 80);
   const principalAddress = clean(body.principalAddress, 500);
   const mailingSame = yes(body.mailingSame);
   const mailingAddress = mailingSame ? principalAddress : clean(body.mailingAddress, 500);
@@ -253,7 +254,7 @@ async function createAnnualSubscription(request, env) {
   const signerName = clean(body.signerName, 180);
   const signerTitle = clean(body.signerTitle, 120);
 
-  if (!validEmail(email) || !companyName || !principalAddress || !mailingAddress || !einStatus || !registeredAgentStatus || !managementStatus || !signerName || !signerTitle || !yes(body.filingAuthorization) || !yes(body.recurringConsent)) {
+  if (!validEmail(email) || !companyName || !annualPhone || !principalAddress || !mailingAddress || !einStatus || !registeredAgentStatus || !managementStatus || !signerName || !signerTitle || !yes(body.filingAuthorization) || !yes(body.recurringConsent)) {
     return json({ error: 'Please complete all required Annual Report questionnaire fields and authorizations.' }, 400);
   }
   if (einStatus === 'update' && !einUpdate) return json({ error: 'Please enter the updated EIN / FEI.' }, 400);
@@ -280,6 +281,7 @@ async function createAnnualSubscription(request, env) {
   params.set('metadata[order_id]', orderId);
   params.set('metadata[order_type]', 'annual_compliance_only');
   params.set('metadata[company_name]', companyName);
+  params.set('metadata[contact_phone]', annualPhone);
   params.set('metadata[principal_address]', principalAddress);
   params.set('metadata[mailing_same]', mailingSame ? 'yes' : 'no');
   params.set('metadata[mailing_address]', mailingAddress);
@@ -330,7 +332,7 @@ function prettyKey(key) {
 function metadataRows(metadata = {}) {
   const preferred = [
     'order_id','package','customer_name','customer_email','phone','customer_country','proposed_company_name','alternate_company_name',
-    'principal_address','mailing_same','mailing_address','registered_agent_type','registered_agent_name','registered_agent_address',
+    'contact_phone','principal_address','mailing_same','mailing_address','registered_agent_type','registered_agent_name','registered_agent_address',
     'registered_agent_signature','management_type','authorized_rep_title','authorized_rep_name','authorized_rep_address',
     'additional_representatives','company_type','purpose','effective_date_choice','effective_date','certificate_status','certified_copy',
     'service_fee_cents','government_fee_cents','annual_plan_selected','filer_signature','registered_agent_consent','certify_ack','public_record_ack','terms_ack',

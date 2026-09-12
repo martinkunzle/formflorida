@@ -110,6 +110,6 @@ Always complete a Stripe **test-mode** order in both English and Spanish before 
 ## Annual Report questionnaire
 
 The Annual Compliance Plan intake now collects:
-Company Name → Contact Email → Principal Address → Mailing Address → EIN/FEI confirmation or update → Registered Agent confirmation or update → Members/Managers/Officers/Directors confirmation or update → Authorized Signer Name → Signer Title → filing authorization → Annual Compliance Plan recurring-payment acceptance → Stripe Checkout.
+Company Name → Contact Email → Phone Number → Principal Address → Mailing Address → EIN/FEI confirmation or update → Registered Agent confirmation or update → Members/Managers/Officers/Directors confirmation or update → Authorized Signer Name → Signer Title → filing authorization → Annual Compliance Plan recurring-payment acceptance → Stripe Checkout.
 
 For privacy, the build does **not** place the actual updated EIN/FEI value into Stripe metadata or automated order-email metadata. If an EIN/FEI update is entered, Stripe metadata records only that an updated value was provided.
