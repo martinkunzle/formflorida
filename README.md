@@ -88,3 +88,7 @@ Do not file an annual report merely because an invoice exists. File only after t
 
 ## Favicon
 Includes favicon.ico, SVG/PNG favicon assets, Apple touch icon, Android icons, and a web app manifest using the Form Florida green F brand mark.
+
+
+## Easier customer intake
+This version uses dropdown country selection, state/province suggestions, and address-reuse checkboxes. Customers can reuse the principal business address for an individual registered agent when that address is in Florida, and for the authorized representative/manager. Mailing-address reuse remains available as well.
