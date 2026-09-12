@@ -1,0 +1,10 @@
+PASS — public/index.html: start directly after pricing
+PASS — public/index.html: hero conversion strip
+PASS — public/index.html: pricing reassurance
+PASS — public/index.html: annual questionnaire anchor
+PASS — public/index.html: mobile CTA exists
+PASS — public/es/index.html: start directly after pricing
+PASS — public/es/index.html: hero conversion strip
+PASS — public/es/index.html: pricing reassurance
+PASS — public/es/index.html: annual questionnaire anchor
+PASS — public/es/index.html: mobile CTA exists
