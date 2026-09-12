@@ -128,7 +128,7 @@ form.addEventListener('submit',async e=>{
   e.preventDefault();
   const btn=form.querySelector('button[type="submit"]'),msg=form.querySelector('.annual-sub-msg');
   if(!form.reportValidity())return;
-  btn.disabled=true;
+  btn.disabled=true;form.setAttribute('aria-busy','true');
   btn.textContent="Abriendo pago seguro…";
   msg.classList.remove('show');
   try{
@@ -140,7 +140,7 @@ form.addEventListener('submit',async e=>{
   }catch(err){
     msg.textContent=err.message||"No se pudo iniciar el pago.";
     msg.classList.add('show');
-    btn.disabled=false;
+    btn.disabled=false;form.removeAttribute('aria-busy');
     btn.textContent="Continuar al pago seguro";
   }
 });

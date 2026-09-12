@@ -1,0 +1,11 @@
+PASS — public/index.html: no duplicate ids
+PASS — public/index.html: viewport-fit cover
+PASS — public/index.html: annual reassurance note
+PASS — public/index.html: annual form present
+PASS — public/es/index.html: no duplicate ids
+PASS — public/es/index.html: viewport-fit cover
+PASS — public/es/index.html: annual reassurance note
+PASS — public/es/index.html: annual form present
+PASS — site.js: mobile step scroll helper
+PASS — site-es.js: mobile step scroll helper
+PASS — styles.css: mobile optimization block
