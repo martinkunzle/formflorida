@@ -25,7 +25,7 @@ function v(name){const el=form.elements[name];if(!el)return'—';if(el.type==='c
 function renderReview(){const b=getBreakdown();const items=[['Contacto',v('correspondenceName')],['Email',v('email')],['LLC propuesta',v('companyName')],['Dirección principal',[v('streetAddress'),v('city'),v('state'),v('postalCode'),v('principalCountry')].filter(x=>x!=='—').join(', ')],['Agente registrado',v('registeredAgentName')],['Administración',v('managementType')],['Representante',v('representativeName')],['Paquete',b.p.label],['Plan anual',annualPlan?.checked?'Sí — $237.75/año desde el 1 de enero':'No'],['A pagar hoy',money(b.total)+' USD']];document.getElementById('review-grid').innerHTML=items.map(([k,val])=>`<div class="review-item"><small>${k}</small><strong>${escapeHtml(val)}</strong></div>`).join('')}
 function escapeHtml(s){return String(s).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
 form.addEventListener('input',()=>{if(current===steps.length-1)renderReview()});form.addEventListener('change',()=>{if(current===steps.length-1)renderReview()});
-form.addEventListener('submit',async e=>{e.preventDefault();if(!validateCurrent())return;checkout.disabled=true;checkout.textContent='Abriendo pago seguro…';msg.style.display='none';try{const payload=Object.fromEntries(new FormData(form).entries());const response=await fetch('/api/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const data=await response.json();if(!response.ok||!data.url)throw new Error(data.error||'No se pudo iniciar el pago.');window.location.assign(data.url)}catch(err){msg.textContent=err.message||'No se pudo iniciar el pago. Intentá de nuevo.';msg.style.display='block';checkout.disabled=false;checkout.textContent='Continuar al pago seguro';}});
+form.addEventListener('submit',async e=>{e.preventDefault();if(!validateCurrent())return;checkout.disabled=true;checkout.textContent='Abriendo pago seguro…';msg.style.display='none';try{const payload=Object.fromEntries(new FormData(form).entries());if(payload.phone_country_code&&payload.phone){payload.phone=(payload.phone_country_code+' '+payload.phone).trim();}const response=await fetch('/api/create-checkout-session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const data=await response.json();if(!response.ok||!data.url)throw new Error(data.error||'No se pudo iniciar el pago.');window.location.assign(data.url)}catch(err){msg.textContent=err.message||'No se pudo iniciar el pago. Intentá de nuevo.';msg.style.display='block';checkout.disabled=false;checkout.textContent='Continuar al pago seguro';}});
 const support=document.getElementById('support-form');support?.addEventListener('submit',e=>{e.preventDefault();const n=document.getElementById('support-name').value.trim(),em=document.getElementById('support-email').value.trim(),m=document.getElementById('support-message').value.trim();const subject=encodeURIComponent('Solicitud de soporte de Form Florida');const body=encodeURIComponent(`Name: ${n}\nEmail: ${em}\n\n${m}`);window.location.href=`mailto:support@formflorida.com?subject=${subject}&body=${body}`});
 
 // Customer-friendly address helpers: dropdown countries, region suggestions, and address reuse.
@@ -40,7 +40,12 @@ function ffFillRegionList(input){
   dl.innerHTML=opts.map(v=>`<option value="${escapeHtml(v)}"></option>`).join('');
 }
 function ffRefreshRegionLists(){document.querySelectorAll('[data-region-input]').forEach(ffFillRegionList);}
-document.querySelectorAll('[data-country-select]').forEach(sel=>sel.addEventListener('change',()=>{ffRefreshRegionLists();}));
+document.querySelectorAll('[data-country-select]').forEach(sel=>sel.addEventListener('change',()=>{ffRefreshRegionLists();
+const FF_PHONE_CODES={"United States": "+1", "Canada": "+1", "Puerto Rico": "+1-787", "Mexico": "+52", "Paraguay": "+595", "Argentina": "+54", "Brazil": "+55", "Colombia": "+57", "Chile": "+56", "Uruguay": "+598", "Peru": "+51", "Ecuador": "+593", "Bolivia": "+591", "Venezuela": "+58", "Costa Rica": "+506", "Panama": "+507", "Guatemala": "+502", "Honduras": "+504", "El Salvador": "+503", "Nicaragua": "+505", "Dominican Republic": "+1-809", "United Kingdom": "+44", "Spain": "+34", "Portugal": "+351", "France": "+33", "Germany": "+49", "Italy": "+39", "Switzerland": "+41"};
+const ffPhoneCode=form.elements.phone_country_code,ffCountry=form.elements.country;
+function ffSyncPhoneCode(){const c=FF_PHONE_CODES[ffCountry?.value];if(c&&ffPhoneCode)ffPhoneCode.value=c;}
+ffCountry?.addEventListener('change',ffSyncPhoneCode);ffSyncPhoneCode();
+}));
 ffRefreshRegionLists();
 function ffPrincipal(){return {street:v('streetAddress')==='—'?'':v('streetAddress'),city:v('city')==='—'?'':v('city'),state:v('state')==='—'?'':v('state'),postal:v('postalCode')==='—'?'':v('postalCode'),country:v('principalCountry')==='—'?'':v('principalCountry')}}
 function ffSet(name,value){const el=form.elements[name]; if(el){el.value=value||''; el.dispatchEvent(new Event('change',{bubbles:true}));}}
@@ -52,6 +57,15 @@ const repSame=document.getElementById('representativeSameBusiness');
 function ffApplyRepSame(){if(!repSame?.checked)return;const a=ffPrincipal();ffSet('representativeStreet',a.street);ffSet('representativeCity',a.city);ffSet('representativeState',a.state);ffSet('representativePostalCode',a.postal);ffSet('representativeCountry',a.country);ffRefreshRegionLists();}
 repSame?.addEventListener('change',ffApplyRepSame);
 ['streetAddress','city','state','postalCode','principalCountry'].forEach(n=>form.elements[n]?.addEventListener('change',()=>{if(agentSame?.checked)ffApplyAgentSame();if(repSame?.checked)ffApplyRepSame();}));
+
+
+const ffMobileCta=document.querySelector('.mobile-cta'),ffIntake=document.getElementById('start');
+if(ffMobileCta&&ffIntake&&'IntersectionObserver' in window){
+  const ffObs=new IntersectionObserver(entries=>{
+    ffMobileCta.classList.toggle('is-hidden',entries.some(e=>e.isIntersecting));
+  },{threshold:.08});
+  ffObs.observe(ffIntake);
+}
 
 updateStateDocs();updateSummary();selectPackage(packageSelect.value);showStep(0);
 })();

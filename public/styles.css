@@ -25,3 +25,70 @@
 .same-address-check{border:1px solid #dbe7df;background:#f7fbf8;border-radius:12px;padding:12px 14px}
 .same-address-check .helper{display:block;margin-left:28px;margin-top:4px}
 .region-helper{font-weight:500;color:var(--muted);font-size:11px}
+
+
+/* Mobile form + phone usability refinements */
+[hidden]{display:none!important}
+.phone-combo{
+  display:grid!important;
+  grid-template-columns:112px minmax(0,1fr)!important;
+  gap:10px!important;
+  align-items:center!important;
+}
+.phone-combo .phone-code{
+  width:100%!important;
+  min-width:0!important;
+  padding-left:10px!important;
+  padding-right:28px!important;
+  white-space:nowrap;
+}
+.phone-combo input{
+  width:100%!important;
+  min-width:0!important;
+}
+.phone-helper{margin-top:2px}
+.mobile-cta.is-hidden{
+  opacity:0!important;
+  transform:translateY(120%)!important;
+  pointer-events:none!important;
+}
+.mobile-cta{transition:opacity .2s ease,transform .2s ease}
+
+@media(max-width:640px){
+  html{scroll-padding-top:72px}
+  body{overflow-x:hidden}
+  .container{width:min(100% - 20px,1180px)}
+  .nav-inner{min-height:64px;gap:8px}
+  .brand{font-size:19px;gap:8px;white-space:nowrap}
+  .mark{width:32px;height:32px;border-radius:9px}
+  .lang-switch{padding:2px}
+  .lang-switch a{min-width:66px;height:32px;font-size:12px}
+  .section{padding:58px 0}
+  .start{padding-top:40px}
+  .start-grid{gap:24px}
+  .form-shell{border-radius:16px}
+  .form-top{padding:16px 16px}
+  .form{padding:16px;gap:14px}
+  .form-step{gap:14px}
+  .step-title h3{font-size:20px}
+  .form label{font-size:14px}
+  .form input,.form select,.form textarea{
+    min-height:50px;
+    padding:13px 12px;
+    border-radius:11px;
+    font-size:16px; /* prevents iOS Safari zoom */
+  }
+  .phone-combo{
+    grid-template-columns:104px minmax(0,1fr)!important;
+    gap:8px!important;
+  }
+  .phone-combo .phone-code{
+    font-size:15px!important;
+    padding-left:8px!important;
+    padding-right:24px!important;
+  }
+  .form-actions{padding-top:14px;gap:10px}
+  .form-actions .btn{width:100%;min-height:52px}
+  .smallprint{line-height:1.45}
+  .order-summary{margin-top:14px}
+}
