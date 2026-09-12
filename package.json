@@ -1,0 +1,15 @@
+{
+  "name": "form-florida-cloudflare-stripe",
+  "private": true,
+  "version": "2.0.0",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "secret:stripe": "wrangler secret put STRIPE_SECRET_KEY",
+    "secret:webhook": "wrangler secret put STRIPE_WEBHOOK_SECRET",
+    "secret:email": "wrangler secret put RESEND_API_KEY"
+  },
+  "devDependencies": {
+    "wrangler": "^4.0.0"
+  }
+}
