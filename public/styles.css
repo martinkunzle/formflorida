@@ -281,3 +281,24 @@ input[type="checkbox"]{
     transition-duration:.01ms!important;
   }
 }
+
+
+/* Final functionality / accessibility pass */
+html{scroll-padding-top:82px}
+[aria-live]{min-height:1em}
+.form input,.form select,.form textarea{max-width:100%}
+.form select{background-color:#fff}
+.form-step:not(.active){display:none!important}
+.form-step.active{display:grid}
+.phone-combo{align-items:stretch!important}
+.phone-combo .phone-code{font-variant-numeric:tabular-nums}
+.form button:disabled,.btn:disabled{opacity:.62;cursor:not-allowed;transform:none!important}
+@media(max-width:640px){
+  html{scroll-padding-top:68px}
+  .form-top{position:sticky;top:62px;z-index:4;background:#fff}
+  .form-shell{overflow:visible}
+  .phone-combo{grid-template-columns:116px minmax(0,1fr)!important}
+  .phone-combo .phone-code{font-size:13px!important}
+  .secure-strip{gap:6px}
+  .paybadge{font-size:11px}
+}

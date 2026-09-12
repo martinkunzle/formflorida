@@ -1,0 +1,17 @@
+PASS — public/site.js: full country-code coverage
+PASS — public/site.js: country-specific phone samples
+PASS — public/site-es.js: full country-code coverage
+PASS — public/site-es.js: country-specific phone samples
+PASS — public/index.html: no duplicate ids
+PASS — public/index.html: clean phone autocomplete
+PASS — public/index.html: language is submitted
+PASS — public/index.html: canonical present
+PASS — public/index.html: local policy links resolve
+PASS — public/es/index.html: no duplicate ids
+PASS — public/es/index.html: clean phone autocomplete
+PASS — public/es/index.html: language is submitted
+PASS — public/es/index.html: canonical present
+PASS — public/es/index.html: local policy links resolve
+PASS — worker.js: Spanish success/cancel support
+PASS — worker.js: annual trial payment-method collection
+PASS — worker.js: registered-agent Florida validation

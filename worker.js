@@ -69,6 +69,7 @@ function validateFiling(body, f) {
   ];
   if (required.some((key) => !f[key])) return 'Please complete all required filing fields.';
   if (!validEmail(f.email)) return 'Please enter a valid email address.';
+  if (f.registeredAgentState.toLowerCase() !== 'florida') return 'The registered agent address must be in Florida.';
   if (f.companyType === 'professional' && !f.purpose) return 'A professional purpose is required for a professional LLC.';
   if (f.effectiveDateChoice === 'custom' && !f.effectiveDate) return 'Please enter the requested effective date.';
   if (!yes(body.mailingSame) && (!f.mailingStreet || !f.mailingCity || !f.mailingState || !f.mailingPostalCode || !f.mailingCountry)) {
@@ -124,6 +125,17 @@ function buildMetadata(body, f, packageKey, p, service, government, orderId) {
   };
 }
 
+
+function localePaths(body, origin, successQuery = '') {
+  const lang = clean(body?.language, 5).toLowerCase() === 'es' ? 'es' : 'en';
+  const base = lang === 'es' ? '/es' : '';
+  return {
+    success: `${origin}${base}/success.html${successQuery}`,
+    cancelFormation: `${origin}${base}/#start`,
+    cancelAnnual: `${origin}${base}/#annual-report`
+  };
+}
+
 async function createCheckout(request, env) {
   if (!env.STRIPE_SECRET_KEY) return json({ error: 'Stripe is not configured yet.' }, 500);
   if (!(request.headers.get('content-type') || '').includes('application/json')) return json({ error: 'Invalid request format.' }, 415);
@@ -148,13 +160,14 @@ async function createCheckout(request, env) {
   const total = service + government;
 
   const origin = new URL(request.url).origin;
+  const paths = localePaths(body, origin, '?session_id={CHECKOUT_SESSION_ID}');
   const annualSelected = yes(body.annualPlan);
   const orderId = `FF-${new Date().toISOString().slice(0,10).replaceAll('-', '')}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
   const params = new URLSearchParams();
   params.set('mode', annualSelected ? 'subscription' : 'payment');
   params.set('customer_email', f.email);
-  params.set('success_url', `${origin}/success.html?session_id={CHECKOUT_SESSION_ID}`);
-  params.set('cancel_url', `${origin}/#start`);
+  params.set('success_url', paths.success);
+  params.set('cancel_url', paths.cancelFormation);
   params.set('billing_address_collection', 'required');
   params.set('phone_number_collection[enabled]', 'true');
   params.set('submit_type', 'pay');
@@ -231,13 +244,15 @@ async function createAnnualSubscription(request, env) {
   if (!validEmail(email) || !companyName || !yes(body.recurringConsent)) return json({ error: 'Please complete the company name, valid email, and recurring-payment authorization.' }, 400);
 
   const origin = new URL(request.url).origin;
+  const paths = localePaths(body, origin, '?annual=1&session_id={CHECKOUT_SESSION_ID}');
   const params = new URLSearchParams();
   params.set('mode', 'subscription');
   params.set('customer_email', email);
-  params.set('success_url', `${origin}/success.html?annual=1&session_id={CHECKOUT_SESSION_ID}`);
-  params.set('cancel_url', `${origin}/#annual-report`);
+  params.set('success_url', paths.success);
+  params.set('cancel_url', paths.cancelAnnual);
   params.set('billing_address_collection', 'required');
   params.set('payment_method_types[0]', 'card');
+  params.set('payment_method_collection', 'always');
   params.set('line_items[0][quantity]', '1');
   params.set('line_items[0][price_data][currency]', 'usd');
   params.set('line_items[0][price_data][unit_amount]', '23775');
@@ -259,6 +274,7 @@ async function createAnnualSubscription(request, env) {
   params.set('subscription_data[metadata][state_fee_cents]', '13875');
   const trialEnd = nextJanuaryFirstBillingDate();
   if (trialEnd) params.set('subscription_data[trial_end]', String(trialEnd));
+  params.set('subscription_data[trial_settings][end_behavior][missing_payment_method]', 'cancel');
 
   const stripeResponse = await fetch('https://api.stripe.com/v1/checkout/sessions', {
     method: 'POST',
@@ -382,8 +398,8 @@ async function notifyCheckoutCompleted(env, event) {
   rows.push(...metadataRows(m).filter(([k]) => !['Order Id','Customer Email','Phone'].includes(k)));
   await sendSupportEmail(env, {
     subject: `NEW FORM FLORIDA ORDER — ${m.order_id || session.id} — ${m.proposed_company_name || m.company_name || session.customer_details?.name || 'Customer'}`,
-    heading: 'New paid Form Florida order',
-    intro: 'Stripe reported a completed checkout. The filing/order details submitted before payment are below.',
+    heading: session.payment_status === 'paid' ? 'New paid Form Florida order' : 'New Form Florida checkout completed',
+    intro: session.payment_status === 'paid' ? 'Stripe reported a completed paid checkout. The filing/order details are below.' : 'Stripe reported a completed checkout. A future subscription payment may be scheduled; review the payment status below before filing or paying any government fee.',
     rows,
     eventId: event.id
   });

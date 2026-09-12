@@ -47,22 +47,17 @@ function ffFillRegionList(input){
   dl.innerHTML=opts.map(v=>`<option value="${escapeHtml(v)}"></option>`).join('');
 }
 function ffRefreshRegionLists(){document.querySelectorAll('[data-region-input]').forEach(ffFillRegionList);}
-document.querySelectorAll('[data-country-select]').forEach(sel=>sel.addEventListener('change',()=>{ffRefreshRegionLists();
-const FF_PHONE_CODES={"United States": "+1", "Canada": "+1", "Puerto Rico": "+1-787", "Mexico": "+52", "Paraguay": "+595", "Argentina": "+54", "Brazil": "+55", "Colombia": "+57", "Chile": "+56", "Uruguay": "+598", "Peru": "+51", "Ecuador": "+593", "Bolivia": "+591", "Venezuela": "+58", "Costa Rica": "+506", "Panama": "+507", "Guatemala": "+502", "Honduras": "+504", "El Salvador": "+503", "Nicaragua": "+505", "Dominican Republic": "+1-809", "United Kingdom": "+44", "Spain": "+34", "Portugal": "+351", "France": "+33", "Germany": "+49", "Italy": "+39", "Switzerland": "+41"};
-const FF_PHONE_EXAMPLES={"+1": "305 555 0123", "+54": "11 2345 6789", "+55": "11 91234 5678", "+56": "9 1234 5678", "+57": "300 123 4567", "+51": "912 345 678", "+595": "981 123 456", "+598": "99 123 456", "+52": "55 1234 5678", "+34": "612 345 678", "+44": "7400 123456", "+33": "6 12 34 56 78", "+49": "1512 3456789", "+39": "312 345 6789", "+351": "912 345 678", "+41": "79 123 45 67", "+507": "6123 4567", "+506": "8312 3456", "+593": "99 123 4567", "+591": "71234567", "+58": "412 123 4567", "+502": "5123 4567", "+503": "7123 4567", "+504": "9123 4567", "+505": "8123 4567", "+1-809": "809 555 0123", "+1-787": "787 555 0123"};
-const ffPhoneCode=form.elements.phone_country_code,ffCountry=form.elements.country;
-function ffSyncPhoneCode(){const c=FF_PHONE_CODES[ffCountry?.value];if(c&&ffPhoneCode)ffPhoneCode.value=c;ffUpdatePhonePlaceholder();}
-function ffUpdatePhonePlaceholder(){
-  const phoneInput=form.elements.phone;
-  const selected=ffPhoneCode?.value;
-  if(phoneInput&&selected&&FF_PHONE_EXAMPLES[selected]){
-    phoneInput.placeholder=FF_PHONE_EXAMPLES[selected];
-  }
-}
-ffCountry?.addEventListener('change',ffSyncPhoneCode);
-ffPhoneCode?.addEventListener('change',ffUpdatePhonePlaceholder);ffSyncPhoneCode();
-}));
+document.querySelectorAll('[data-country-select]').forEach(sel=>sel.addEventListener('change',ffRefreshRegionLists));
 ffRefreshRegionLists();
+const FF_PHONE_CODES={"United States":"+1","Canada":"+1","Mexico":"+52","Paraguay":"+595","Argentina":"+54","Brazil":"+55","Colombia":"+57","Chile":"+56","Uruguay":"+598","Peru":"+51","Ecuador":"+593","Bolivia":"+591","Venezuela":"+58","Costa Rica":"+506","Panama":"+507","Guatemala":"+502","Honduras":"+504","El Salvador":"+503","Nicaragua":"+505","Dominican Republic":"+1","Puerto Rico":"+1","Bahamas":"+1","Barbados":"+1","Jamaica":"+1","Trinidad and Tobago":"+1","United Kingdom":"+44","Ireland":"+353","Spain":"+34","Portugal":"+351","France":"+33","Germany":"+49","Italy":"+39","Switzerland":"+41","Netherlands":"+31","Belgium":"+32","Austria":"+43","Sweden":"+46","Norway":"+47","Denmark":"+45","Finland":"+358","Poland":"+48","Czech Republic":"+420","Greece":"+30","Romania":"+40","Ukraine":"+380","Turkey":"+90","Israel":"+972","United Arab Emirates":"+971","Saudi Arabia":"+966","India":"+91","Pakistan":"+92","Bangladesh":"+880","China":"+86","Hong Kong":"+852","Taiwan":"+886","Japan":"+81","South Korea":"+82","Singapore":"+65","Malaysia":"+60","Thailand":"+66","Vietnam":"+84","Philippines":"+63","Indonesia":"+62","Australia":"+61","New Zealand":"+64","South Africa":"+27","Nigeria":"+234","Kenya":"+254","Ghana":"+233","Egypt":"+20","Morocco":"+212"};
+const FF_PHONE_EXAMPLES={"United States":"305 555 0123","Canada":"416 555 0123","Mexico":"55 1234 5678","Paraguay":"981 123 456","Argentina":"11 2345 6789","Brazil":"11 91234 5678","Colombia":"300 123 4567","Chile":"9 1234 5678","Uruguay":"99 123 456","Peru":"912 345 678","Ecuador":"99 123 4567","Bolivia":"71234567","Venezuela":"412 123 4567","Costa Rica":"8312 3456","Panama":"6123 4567","Guatemala":"5123 4567","Honduras":"9123 4567","El Salvador":"7123 4567","Nicaragua":"8123 4567","Dominican Republic":"809 555 0123","Puerto Rico":"787 555 0123","Bahamas":"242 555 0123","Barbados":"246 555 0123","Jamaica":"876 555 0123","Trinidad and Tobago":"868 555 0123","United Kingdom":"7400 123456","Ireland":"85 123 4567","Spain":"612 345 678","Portugal":"912 345 678","France":"6 12 34 56 78","Germany":"1512 3456789","Italy":"312 345 6789","Switzerland":"79 123 45 67","Netherlands":"6 12345678","Belgium":"470 12 34 56","Austria":"664 1234567","Sweden":"70 123 45 67","Norway":"412 34 567","Denmark":"20 12 34 56","Finland":"40 123 4567","Poland":"512 345 678","Czech Republic":"601 123 456","Greece":"691 234 5678","Romania":"712 345 678","Ukraine":"67 123 4567","Turkey":"532 123 4567","Israel":"50 123 4567","United Arab Emirates":"50 123 4567","Saudi Arabia":"50 123 4567","India":"98765 43210","Pakistan":"300 1234567","Bangladesh":"1712 345678","China":"138 0013 8000","Hong Kong":"5123 4567","Taiwan":"912 345 678","Japan":"90 1234 5678","South Korea":"10 1234 5678","Singapore":"8123 4567","Malaysia":"12 345 6789","Thailand":"81 234 5678","Vietnam":"91 234 5678","Philippines":"917 123 4567","Indonesia":"812 3456 7890","Australia":"412 345 678","New Zealand":"21 123 4567","South Africa":"82 123 4567","Nigeria":"803 123 4567","Kenya":"712 123456","Ghana":"24 123 4567","Egypt":"10 1234 5678","Morocco":"612 345678"};
+const ffPhoneCode=form.elements.phone_country_code,ffCountry=form.elements.country,ffPhone=form.elements.phone;
+function ffUpdatePhonePlaceholder(){const country=ffCountry?.value;if(ffPhone){ffPhone.placeholder=FF_PHONE_EXAMPLES[country]||'Phone number';}}
+function ffSyncPhoneCode(){const c=FF_PHONE_CODES[ffCountry?.value];if(c&&ffPhoneCode){ffPhoneCode.value=c;}ffUpdatePhonePlaceholder();}
+ffCountry?.addEventListener('change',ffSyncPhoneCode);
+
+ffSyncPhoneCode();
+
 function ffPrincipal(){return {street:v('streetAddress')==='—'?'':v('streetAddress'),city:v('city')==='—'?'':v('city'),state:v('state')==='—'?'':v('state'),postal:v('postalCode')==='—'?'':v('postalCode'),country:v('principalCountry')==='—'?'':v('principalCountry')}}
 function ffSet(name,value){const el=form.elements[name]; if(el){el.value=value||''; el.dispatchEvent(new Event('change',{bubbles:true}));}}
 const agentType=form.elements.registeredAgentType, agentSame=document.getElementById('agentSameBusiness');

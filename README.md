@@ -92,3 +92,16 @@ Includes favicon.ico, SVG/PNG favicon assets, Apple touch icon, Android icons, a
 
 ## Easier customer intake
 This version uses dropdown country selection, state/province suggestions, and address-reuse checkboxes. Customers can reuse the principal business address for an individual registered agent when that address is in Florida, and for the authorized representative/manager. Mailing-address reuse remains available as well.
+
+## Final functional safeguards
+
+This build also:
+- keeps the contact country, phone calling code, and sample phone number synchronized;
+- includes calling-code coverage for every country currently shown in the intake country dropdown;
+- sends Spanish customers back to Spanish success/cancel pages;
+- collects a payment method when an Annual Compliance Plan begins with a trial before January 1 billing;
+- validates on the server that the registered-agent state is Florida;
+- keeps English and Spanish progress-step labels localized;
+- adds canonical/hreflang metadata and mobile-safe viewport behavior.
+
+Always complete a Stripe **test-mode** order in both English and Spanish before enabling live payments.
