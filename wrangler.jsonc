@@ -1,7 +1,7 @@
 {
   "$schema": "./node_modules/wrangler/config-schema.json",
   "name": "formflorida",
-  "main": "./src/worker.js",
+  "main": "./worker.js",
   "compatibility_date": "2026-09-08",
   "assets": {
     "directory": "./public",
