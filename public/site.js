@@ -57,7 +57,10 @@ function ffUpdatePhonePlaceholder(){const code=ffPhoneCode?.value;if(ffPhone){ff
 function ffSyncPhoneCode(){const c=FF_PHONE_CODES[ffCountry?.value];if(c&&ffPhoneCode){ffPhoneCode.value=c;}ffUpdatePhonePlaceholder();}
 ffCountry?.addEventListener('change',ffSyncPhoneCode);
 ffPhoneCode?.addEventListener('change',ffUpdatePhonePlaceholder);
+ffPhoneCode?.addEventListener('input',ffUpdatePhonePlaceholder);
 ffSyncPhoneCode();
+window.addEventListener('pageshow',ffUpdatePhonePlaceholder);
+setTimeout(ffUpdatePhonePlaceholder,250);
 
 function ffPrincipal(){return {street:v('streetAddress')==='—'?'':v('streetAddress'),city:v('city')==='—'?'':v('city'),state:v('state')==='—'?'':v('state'),postal:v('postalCode')==='—'?'':v('postalCode'),country:v('principalCountry')==='—'?'':v('principalCountry')}}
 function ffSet(name,value){const el=form.elements[name]; if(el){el.value=value||''; el.dispatchEvent(new Event('change',{bubbles:true}));}}
