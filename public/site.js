@@ -7,6 +7,13 @@ const back=document.getElementById('back-button'), next=document.getElementById(
 const packageSelect=document.getElementById('package'), cards=[...document.querySelectorAll('[data-package-card]')], annualPlan=document.getElementById('annualPlan');
 const packageData={essential:{label:'Essential',base:249,service:124,gov:125,includesStatus:false,includesCopy:false},plus:{label:'Complete',base:349,service:219,gov:130,includesStatus:true,includesCopy:false},premium:{label:'Premium',base:499,service:339,gov:160,includesStatus:true,includesCopy:true}};
 const money=n=>'$'+Number(n).toFixed(2);
+
+function ffScrollFormIntoView(){
+  if(window.matchMedia('(max-width: 640px)').matches){
+    document.querySelector('.form-shell')?.scrollIntoView({behavior:'smooth',block:'start'});
+  }
+}
+
 function showStep(i){current=Math.max(0,Math.min(steps.length-1,i));steps.forEach((s,idx)=>s.classList.toggle('active',idx===current));label.textContent=`Step ${current+1} of ${steps.length}`;nameEl.textContent=steps[current].dataset.name;bar.style.width=`${((current+1)/steps.length)*100}%`;back.hidden=current===0;next.hidden=current===steps.length-1;checkout.hidden=current!==steps.length-1;if(current===steps.length-1) renderReview();steps[current].querySelector('input,select,textarea')?.focus({preventScroll:true});}
 function fieldsInStep(){return [...steps[current].querySelectorAll('input,select,textarea')].filter(el=>!el.disabled && !el.closest('[hidden]'));}
 function validateCurrent(){msg.style.display='none';for(const el of fieldsInStep()){if(!el.checkValidity()){el.reportValidity();return false;}}return true;}
@@ -42,9 +49,18 @@ function ffFillRegionList(input){
 function ffRefreshRegionLists(){document.querySelectorAll('[data-region-input]').forEach(ffFillRegionList);}
 document.querySelectorAll('[data-country-select]').forEach(sel=>sel.addEventListener('change',()=>{ffRefreshRegionLists();
 const FF_PHONE_CODES={"United States": "+1", "Canada": "+1", "Puerto Rico": "+1-787", "Mexico": "+52", "Paraguay": "+595", "Argentina": "+54", "Brazil": "+55", "Colombia": "+57", "Chile": "+56", "Uruguay": "+598", "Peru": "+51", "Ecuador": "+593", "Bolivia": "+591", "Venezuela": "+58", "Costa Rica": "+506", "Panama": "+507", "Guatemala": "+502", "Honduras": "+504", "El Salvador": "+503", "Nicaragua": "+505", "Dominican Republic": "+1-809", "United Kingdom": "+44", "Spain": "+34", "Portugal": "+351", "France": "+33", "Germany": "+49", "Italy": "+39", "Switzerland": "+41"};
+const FF_PHONE_EXAMPLES={"+1": "305 555 0123", "+54": "11 2345 6789", "+55": "11 91234 5678", "+56": "9 1234 5678", "+57": "300 123 4567", "+51": "912 345 678", "+595": "981 123 456", "+598": "99 123 456", "+52": "55 1234 5678", "+34": "612 345 678", "+44": "7400 123456", "+33": "6 12 34 56 78", "+49": "1512 3456789", "+39": "312 345 6789", "+351": "912 345 678", "+41": "79 123 45 67", "+507": "6123 4567", "+506": "8312 3456", "+593": "99 123 4567", "+591": "71234567", "+58": "412 123 4567", "+502": "5123 4567", "+503": "7123 4567", "+504": "9123 4567", "+505": "8123 4567", "+1-809": "809 555 0123", "+1-787": "787 555 0123"};
 const ffPhoneCode=form.elements.phone_country_code,ffCountry=form.elements.country;
-function ffSyncPhoneCode(){const c=FF_PHONE_CODES[ffCountry?.value];if(c&&ffPhoneCode)ffPhoneCode.value=c;}
-ffCountry?.addEventListener('change',ffSyncPhoneCode);ffSyncPhoneCode();
+function ffSyncPhoneCode(){const c=FF_PHONE_CODES[ffCountry?.value];if(c&&ffPhoneCode)ffPhoneCode.value=c;ffUpdatePhonePlaceholder();}
+function ffUpdatePhonePlaceholder(){
+  const phoneInput=form.elements.phone;
+  const selected=ffPhoneCode?.value;
+  if(phoneInput&&selected&&FF_PHONE_EXAMPLES[selected]){
+    phoneInput.placeholder=FF_PHONE_EXAMPLES[selected];
+  }
+}
+ffCountry?.addEventListener('change',ffSyncPhoneCode);
+ffPhoneCode?.addEventListener('change',ffUpdatePhonePlaceholder);ffSyncPhoneCode();
 }));
 ffRefreshRegionLists();
 function ffPrincipal(){return {street:v('streetAddress')==='—'?'':v('streetAddress'),city:v('city')==='—'?'':v('city'),state:v('state')==='—'?'':v('state'),postal:v('postalCode')==='—'?'':v('postalCode'),country:v('principalCountry')==='—'?'':v('principalCountry')}}
