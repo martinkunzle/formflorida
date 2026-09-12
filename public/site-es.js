@@ -85,4 +85,63 @@ if(ffMobileCta&&ffIntake&&'IntersectionObserver' in window){
 updateStateDocs();updateSummary();selectPackage(packageSelect.value);showStep(0);
 })();
 
-;(()=>{document.querySelectorAll('.annual-subscription-form').forEach(form=>{form.addEventListener('submit',async e=>{e.preventDefault();const btn=form.querySelector('button[type="submit"]'),msg=form.querySelector('.annual-sub-msg');if(!form.reportValidity())return;btn.disabled=true;btn.textContent='Abriendo suscripción segura…';msg.classList.remove('show');try{const payload=Object.fromEntries(new FormData(form).entries());const r=await fetch('/api/create-annual-subscription',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});const d=await r.json();if(!r.ok||!d.url)throw new Error(d.error||'No se pudo iniciar la suscripción.');window.location.assign(d.url)}catch(err){msg.textContent=err.message||'No se pudo iniciar la suscripción.';msg.classList.add('show');btn.disabled=false;btn.textContent='Suscribirme al Plan Anual';}})});})();
+;(()=>{document.querySelectorAll('.annual-subscription-form').forEach(form=>{
+const mailingSame=form.elements.mailingSame;
+const mailingWrap=form.querySelector('#annual-mailing-wrap');
+const mailingAddress=form.elements.mailingAddress;
+const einStatus=form.elements.einStatus;
+const einWrap=form.querySelector('#annual-ein-update-wrap');
+const einUpdate=form.elements.einUpdate;
+const agentStatus=form.elements.registeredAgentStatus;
+const agentWrap=form.querySelector('#annual-agent-update-wrap');
+const agentName=form.elements.registeredAgentName;
+const agentAddress=form.elements.registeredAgentAddress;
+const managementStatus=form.elements.managementStatus;
+const managementWrap=form.querySelector('#annual-management-update-wrap');
+const managementUpdate=form.elements.managementUpdate;
+
+function syncAnnualFields(){
+  const same=!!mailingSame?.checked;
+  if(mailingWrap)mailingWrap.hidden=same;
+  if(mailingAddress){mailingAddress.required=!same;if(same)mailingAddress.value='';}
+
+  const einNeeds=einStatus?.value==='update';
+  if(einWrap)einWrap.hidden=!einNeeds;
+  if(einUpdate)einUpdate.required=einNeeds;
+
+  const agentNeeds=agentStatus?.value==='update';
+  if(agentWrap)agentWrap.hidden=!agentNeeds;
+  if(agentName)agentName.required=agentNeeds;
+  if(agentAddress)agentAddress.required=agentNeeds;
+
+  const managementNeeds=managementStatus?.value==='update';
+  if(managementWrap)managementWrap.hidden=!managementNeeds;
+  if(managementUpdate)managementUpdate.required=managementNeeds;
+}
+mailingSame?.addEventListener('change',syncAnnualFields);
+einStatus?.addEventListener('change',syncAnnualFields);
+agentStatus?.addEventListener('change',syncAnnualFields);
+managementStatus?.addEventListener('change',syncAnnualFields);
+syncAnnualFields();
+
+form.addEventListener('submit',async e=>{
+  e.preventDefault();
+  const btn=form.querySelector('button[type="submit"]'),msg=form.querySelector('.annual-sub-msg');
+  if(!form.reportValidity())return;
+  btn.disabled=true;
+  btn.textContent="Abriendo pago seguro…";
+  msg.classList.remove('show');
+  try{
+    const payload=Object.fromEntries(new FormData(form).entries());
+    const r=await fetch('/api/create-annual-subscription',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+    const d=await r.json();
+    if(!r.ok||!d.url)throw new Error(d.error||"No se pudo iniciar el pago.");
+    window.location.assign(d.url)
+  }catch(err){
+    msg.textContent=err.message||"No se pudo iniciar el pago.";
+    msg.classList.add('show');
+    btn.disabled=false;
+    btn.textContent="Continuar al pago seguro";
+  }
+});
+});})();

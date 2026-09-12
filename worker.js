@@ -241,7 +241,25 @@ async function createAnnualSubscription(request, env) {
   const email = clean(body.email, 180).toLowerCase();
   const companyName = clean(body.companyName, 180);
   const documentNumber = clean(body.documentNumber, 80);
-  if (!validEmail(email) || !companyName || !yes(body.recurringConsent)) return json({ error: 'Please complete the company name, valid email, and recurring-payment authorization.' }, 400);
+  const principalAddress = clean(body.principalAddress, 500);
+  const mailingSame = yes(body.mailingSame);
+  const mailingAddress = mailingSame ? principalAddress : clean(body.mailingAddress, 500);
+  const einStatus = clean(body.einStatus, 30);
+  const einUpdate = clean(body.einUpdate, 40);
+  const registeredAgentStatus = clean(body.registeredAgentStatus, 30);
+  const registeredAgentName = clean(body.registeredAgentName, 180);
+  const registeredAgentAddress = clean(body.registeredAgentAddress, 500);
+  const managementStatus = clean(body.managementStatus, 30);
+  const managementUpdate = clean(body.managementUpdate, 500);
+  const signerName = clean(body.signerName, 180);
+  const signerTitle = clean(body.signerTitle, 120);
+
+  if (!validEmail(email) || !companyName || !documentNumber || !principalAddress || !mailingAddress || !einStatus || !registeredAgentStatus || !managementStatus || !signerName || !signerTitle || !yes(body.filingAuthorization) || !yes(body.recurringConsent)) {
+    return json({ error: 'Please complete all required Annual Report questionnaire fields and authorizations.' }, 400);
+  }
+  if (einStatus === 'update' && !einUpdate) return json({ error: 'Please enter the updated EIN / FEI.' }, 400);
+  if (registeredAgentStatus === 'update' && (!registeredAgentName || !registeredAgentAddress)) return json({ error: 'Please enter the updated registered-agent name and Florida address.' }, 400);
+  if (managementStatus === 'update' && !managementUpdate) return json({ error: 'Please enter the updated members, managers, officers, or directors.' }, 400);
 
   const origin = new URL(request.url).origin;
   const paths = localePaths(body, origin, '?annual=1&session_id={CHECKOUT_SESSION_ID}');
@@ -264,12 +282,27 @@ async function createAnnualSubscription(request, env) {
   params.set('metadata[order_type]', 'annual_compliance_only');
   params.set('metadata[company_name]', companyName);
   params.set('metadata[document_number]', documentNumber);
+  params.set('metadata[principal_address]', principalAddress);
+  params.set('metadata[mailing_same]', mailingSame ? 'yes' : 'no');
+  params.set('metadata[mailing_address]', mailingAddress);
+  params.set('metadata[ein_status]', einStatus);
+  params.set('metadata[ein_update_provided]', einUpdate ? 'yes' : 'no');
+  params.set('metadata[registered_agent_status]', registeredAgentStatus);
+  params.set('metadata[registered_agent_name]', registeredAgentName);
+  params.set('metadata[registered_agent_address]', registeredAgentAddress);
+  params.set('metadata[management_status]', managementStatus);
+  params.set('metadata[management_update]', managementUpdate);
+  params.set('metadata[authorized_signer_name]', signerName);
+  params.set('metadata[signer_title]', signerTitle);
+  params.set('metadata[filing_authorization]', 'yes');
   params.set('metadata[form_florida_service_fee_cents]', '9900');
   params.set('metadata[state_fee_cents]', '13875');
   params.set('metadata[recurring_consent]', 'yes');
   params.set('subscription_data[metadata][order_id]', orderId);
   params.set('subscription_data[metadata][company_name]', companyName);
   params.set('subscription_data[metadata][document_number]', documentNumber);
+  params.set('subscription_data[metadata][authorized_signer_name]', signerName);
+  params.set('subscription_data[metadata][signer_title]', signerTitle);
   params.set('subscription_data[metadata][service_fee_cents]', '9900');
   params.set('subscription_data[metadata][state_fee_cents]', '13875');
   const trialEnd = nextJanuaryFirstBillingDate();
@@ -304,7 +337,7 @@ function metadataRows(metadata = {}) {
     'registered_agent_signature','management_type','authorized_rep_title','authorized_rep_name','authorized_rep_address',
     'additional_representatives','company_type','purpose','effective_date_choice','effective_date','certificate_status','certified_copy',
     'service_fee_cents','government_fee_cents','annual_plan_selected','filer_signature','registered_agent_consent','certify_ack','public_record_ack','terms_ack',
-    'document_number','form_florida_service_fee_cents','state_fee_cents','recurring_consent','order_type'
+    'document_number','principal_address','mailing_same','mailing_address','ein_status','ein_update_provided','registered_agent_status','registered_agent_name','registered_agent_address','management_status','management_update','authorized_signer_name','signer_title','filing_authorization','form_florida_service_fee_cents','state_fee_cents','recurring_consent','order_type'
   ];
   const used = new Set();
   const rows = [];
