@@ -746,3 +746,83 @@ details summary{
  #start{padding-top:28px!important}
  .checkout-handoff{margin:10px 10px 0;padding:11px 12px}
 }
+
+
+/* ===== Near-10/10 Checkout UX Pass ===== */
+.step-divider{
+  grid-column:1/-1;
+  margin:8px 0 0;
+  padding-top:16px;
+  border-top:1px solid var(--line);
+  color:var(--green);
+  font-size:13px;
+  font-weight:850;
+  letter-spacing:.02em;
+}
+.five-step-cue{
+  margin:10px 14px 0;
+  padding:9px 12px;
+  border-radius:10px;
+  background:#fff;
+  border:1px solid var(--line);
+  color:var(--muted);
+  font-size:11px;
+  font-weight:750;
+  text-align:center;
+}
+#checkout-button{
+  min-width:250px;
+}
+.form-step label{
+  min-width:0;
+}
+.form-step input,.form-step select,.form-step textarea{
+  transition:border-color .15s ease,box-shadow .15s ease;
+}
+.form-step input:user-invalid,.form-step select:user-invalid,.form-step textarea:user-invalid{
+  border-color:#b54848;
+}
+.price.selected,.price.profit-focus{
+  position:relative;
+}
+.price.selected::after,.price.profit-focus::after{
+  content:"Selected";
+  position:absolute;
+  top:12px;
+  right:12px;
+  padding:4px 8px;
+  border-radius:999px;
+  background:#eaf6ef;
+  color:var(--green);
+  font-size:10px;
+  font-weight:850;
+}
+@media(max-width:640px){
+  .five-step-cue{
+    margin:8px 10px 0;
+    padding:8px 10px;
+  }
+  .form-actions{
+    position:sticky;
+    bottom:0;
+    z-index:12;
+    margin:8px -14px -14px!important;
+    padding:10px 14px calc(10px + env(safe-area-inset-bottom));
+    background:rgba(255,255,255,.96);
+    backdrop-filter:blur(12px);
+    border-top:1px solid var(--line);
+  }
+  .form-actions .right{
+    width:100%;
+  }
+  .form-actions .right .btn{
+    width:100%;
+  }
+  #checkout-button{
+    min-width:0;
+  }
+  .step-divider{
+    margin-top:4px;
+    padding-top:13px;
+  }
+}

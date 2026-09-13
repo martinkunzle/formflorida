@@ -1,0 +1,12 @@
+PASS — public/index.html: 5 formation steps
+PASS — public/index.html: no duplicate ids
+PASS — public/index.html: single next button
+PASS — public/index.html: single checkout button
+PASS — public/index.html: final CTA wording
+PASS — public/index.html: critical fields preserved
+PASS — public/es/index.html: 5 formation steps
+PASS — public/es/index.html: no duplicate ids
+PASS — public/es/index.html: single next button
+PASS — public/es/index.html: single checkout button
+PASS — public/es/index.html: final CTA wording
+PASS — public/es/index.html: critical fields preserved
