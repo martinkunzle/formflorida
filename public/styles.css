@@ -826,3 +826,24 @@ details summary{
     padding-top:13px;
   }
 }
+
+
+/* ===== Annual Compliance Plan hero button ===== */
+.hero .cta{
+  flex-wrap:wrap;
+}
+.annual-main-cta{
+  white-space:normal;
+  text-align:center;
+  line-height:1.15;
+}
+@media(min-width:641px){
+  .hero .cta .annual-main-cta{
+    min-width:280px;
+  }
+}
+@media(max-width:640px){
+  .hero .cta .annual-main-cta{
+    width:100%;
+  }
+}
