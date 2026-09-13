@@ -847,3 +847,52 @@ details summary{
     width:100%;
   }
 }
+
+
+/* ===== Top-right annual CTA group ===== */
+.nav-cta-group{
+  display:none;
+}
+.nav-cta-group .btn{
+  min-height:54px;
+  padding:15px 22px;
+  font-size:16px;
+  line-height:1.1;
+  text-align:center;
+  white-space:nowrap;
+}
+.nav-annual-cta{
+  white-space:normal;
+}
+@media(min-width:1120px){
+  .nav-cta-group{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    flex:0 0 auto;
+  }
+  .nav-cta-group .btn{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .nav-annual-cta{
+    max-width:260px;
+  }
+}
+@media(min-width:901px) and (max-width:1119px){
+  .nav-cta-group{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    flex:0 0 auto;
+  }
+  .nav-start-cta{
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .nav-annual-cta{
+    display:none;
+  }
+}
