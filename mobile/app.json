@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Form Florida",
+    "slug": "form-florida",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "formflorida",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.formflorida.app",
+      "buildNumber": "1",
+      "infoPlist": { "ITSAppUsesNonExemptEncryption": false }
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0B5D44",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "package": "com.formflorida.app",
+      "versionCode": 1,
+      "predictiveBackGestureEnabled": false
+    },
+    "plugins": [
+      "expo-web-browser",
+      "expo-localization"
+    ]
+  }
+}
